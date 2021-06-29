@@ -987,6 +987,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8dd5a6d5999d9907cda8ed67bbd137d3af8085216c2ac62de5be860bd41f304a"
 
 [[package]]
+name = "live_view_test"
+version = "0.1.0"
+dependencies = [
+ "actix-files",
+ "actix-web",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "thiserror",
+ "todo_common",
+]
+
+[[package]]
 name = "lock_api"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1349,19 +1362,6 @@ checksum = "11834e137f3b14e309437a8276714eed3a80d1ef894869e510f2c0c0b98b9f4a"
 dependencies = [
  "hostname",
  "quick-error",
-]
-
-[[package]]
-name = "rust_test"
-version = "0.1.0"
-dependencies = [
- "actix-files",
- "actix-web",
- "serde",
- "serde_derive",
- "serde_json",
- "thiserror",
- "todo_common",
 ]
 
 [[package]]

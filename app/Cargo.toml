@@ -1,7 +1,7 @@
 [package]
 version = "0.1.0"
 name = "app"
-authors = ["Spencer Davies <spencerhdavies@gmail.com>"]
+authors = ["Spencer Davies <spencerhdavies@gmail.com>", "Rick Smorawski <rickms@gmail.com>"]
 edition = "2018"
 
 [lib]

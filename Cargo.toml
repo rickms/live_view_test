@@ -1,8 +1,8 @@
 [package]
 version = "0.1.0"
-name = "rust_test"
-repository = "https://github.com/LiveViewTech/rust-test"
-authors = ["Spencer Davies <spencerhdavies@gmail.com>"]
+name = "live_view_test"
+repository = "https://github.com/rickms/live_view_test"
+authors = ["Spencer Davies <spencerhdavies@gmail.com>", "Rick Smorawski <rickms@gmail.com>"]
 description = "Rust/wasm test for WebDev applicants"
 readme = "./README.md"
 edition = "2018"
