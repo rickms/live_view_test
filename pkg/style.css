@@ -1,0 +1,28 @@
+body {
+    padding: 20px;
+}
+
+input {
+    margin-bottom: 10px;
+}
+
+.checkbox {
+    min-width: 16px;
+}
+
+.container.tasks {
+    padding-bottom: 10px;
+}
+
+.main {
+    margin-left: 0px;
+}
+
+.btn-close-custom {
+    min-width: 24px;
+}
+
+.task-completed {
+    text-decoration: line-through;
+    opacity: 0.75;
+}
