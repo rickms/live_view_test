@@ -14,10 +14,10 @@ pub enum StateChangeError {
 #[derive(Serialize, Debug)]
 pub struct State {
     last_todo_id: ToDoId,
-    todo_items: Vec<ToDo>,
+    todos: Vec<ToDo>,
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ToDo {
     pub id: ToDoId,
     pub description: String,
@@ -34,39 +34,39 @@ impl State {
     fn new() -> State {
         State {
             last_todo_id: 0,
-            todo_items: Vec::new()
+            todos: Vec::new()
         }
     }
-    pub fn add_todo_item(&mut self, description:&str) -> Result<ToDo,StateChangeError> {
+    pub fn add_todo(&mut self, description:&str) -> Result<ToDo,StateChangeError> {
         // Simple id tracking for this test. Production environment id tracking would be more complex.
         self.last_todo_id = self.last_todo_id.wrapping_add( 1);
         let id = self.last_todo_id;
 
         let new_todo = ToDo::new(id, description);
-        self.todo_items.push(new_todo.clone());
+        self.todos.push(new_todo.clone());
         Ok(new_todo)
     }
 
-    pub fn remove_todo_item(&mut self, id:ToDoId) -> Result<ToDoId, StateChangeError> {
-        self.todo_items.remove(
-            self.todo_items.iter().position(|todo| todo.id == id).ok_or(StateChangeError::ToDoNotFound(id))?
+    pub fn remove_todo(&mut self, id:ToDoId) -> Result<ToDoId, StateChangeError> {
+        self.todos.remove(
+            self.todos.iter().position(|todo| todo.id == id).ok_or(StateChangeError::ToDoNotFound(id))?
         );
 
         Ok(id)
     }
 
-    pub fn clear_todo_items(&mut self) -> Result<usize, StateChangeError> {
-        let total = self.todo_items.len();
-        self.todo_items.clear();
+    pub fn clear_todos(&mut self) -> Result<usize, StateChangeError> {
+        let total = self.todos.len();
+        self.todos.clear();
         Ok(total)
     }
 
-    pub fn todo_items(&self) -> &[ToDo] {
-        self.todo_items.as_slice()
+    pub fn todos(&self) -> &[ToDo] {
+        self.todos.as_slice()
     }
 
     pub fn update_todo(&mut self, id:ToDoId, update:UpdateRequest) -> Result<ToDo, StateChangeError> {
-        let item = self.todo_items.iter_mut().find(|todo| todo.id == id).ok_or(StateChangeError::ToDoNotFound(id))?;
+        let item = self.todos.iter_mut().find(|todo| todo.id == id).ok_or(StateChangeError::ToDoNotFound(id))?;
 
         if update.description.is_some() {
             item.description = update.description.unwrap(); // unwrap OK here because of is_some check.
@@ -83,5 +83,45 @@ impl State {
 impl Default for State {
     fn default() -> State {
         State::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::app::{State, ToDo};
+    use todo_common::UpdateRequest;
+
+    #[test]
+    fn add_todo() {
+        let mut state = State::new();
+        let _ = state.add_todo("test");
+        assert_eq!(state.todos, vec![ToDo { id: 1, description: "test".to_owned(), completed: false}] );
+    }
+    #[test]
+    fn remove_todo() {
+        let mut state = State::new();
+        let _ = state.add_todo("test1");
+        let _ = state.add_todo("test2");
+        let _ = state.add_todo("test3");
+        let _ = state.remove_todo(2);
+        assert_eq!(state.todos, vec![ToDo { id: 1, description: "test1".to_owned(), completed: false}, ToDo { id: 3, description: "test3".to_owned(), completed: false}] );
+    }
+
+    #[test]
+    fn clear_todo() {
+        let mut state = State::new();
+        let _ = state.add_todo("test1");
+        let _ = state.add_todo("test2");
+        let _ = state.add_todo("test3");
+        let _ = state.clear_todos();
+        assert_eq!(state.todos, vec![] );
+    }
+
+    #[test]
+    fn update_todo() {
+        let mut state = State::new();
+        let _ = state.add_todo("test");
+        let _ = state.update_todo(1, UpdateRequest { description: None, completed:Some(true) });
+        assert_eq!(state.todos, vec![ToDo { id: 1, description: "test".to_owned(), completed: true}] );
     }
 }
