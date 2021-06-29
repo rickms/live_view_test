@@ -1,0 +1,15 @@
+[package]
+version = "0.1.0"
+name = "todo_common"
+repository = "https://github.com/LiveViewTech/rust-test"
+authors = ["Rick Smorawski <rickms@gmail.com>"]
+description = "Rust/wasm test for WebDev applicants"
+edition = "2018"
+
+[lib]
+name = "todo_common"           # The name of the target.
+path = "src/lib.rs"    # The source file of the target.
+
+[dependencies]
+serde = "1.0.116"
+serde_derive = "1.0.116"
