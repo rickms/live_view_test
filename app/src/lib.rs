@@ -1,32 +1,29 @@
 use seed::*;
-use seed::browser::fetch;
 use seed::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use todo_common::{ClearResponse, CreateRequest, RemoveResponse, UpdateRequest};
-use std::collections::HashMap;
+use todo_common::{ClearResponse, RemoveResponse, UpdateRequest};
 
 mod view;
 mod request;
 
 type ToDoId = u64;
-const ENTER_KEY: &str = "Enter";
 
 #[derive(Serialize, Deserialize)]
-struct ToDo {
+pub struct ToDo {
     id: ToDoId,
     description: String,
     completed: bool,
 }
 
 #[derive(Default)]
-struct Model {
-    todos: HashMap<ToDoId,ToDo>,
+pub struct Model {
+    todos: Vec<ToDo>,
     new_todo_description: String,
     error: Option<String>,
 }
 
-enum Msg {
+pub enum Msg {
     NewToDoDescriptionChange(String),
     AddToDo,
     RemoveToDo(ToDoId),
@@ -98,25 +95,22 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             });
         }
         ToDosReceived(resp) => match validate_api_request(resp) {
-            Ok(resp) => {
-                model.todos.clear();
-                resp.into_iter().for_each( |todo| { model.todos.insert(todo.id, todo); } );
-            }
+            Ok(resp) => model.todos = resp,
             Err(e) => model.error = Some(e),
         },
         ToDoAdded(resp) => match validate_api_request(resp) {
             Ok(resp) => {
-                model.todos.insert(resp.id, resp);
+                model.todos.push(resp);
                 model.new_todo_description.clear();
             }
             Err(e) => model.error = Some(e),
         },
         ToDoRemoved(resp) => match validate_api_request(resp) {
             Ok(resp) => {
-                let removed = model.todos.remove(&resp.id);
-                if removed.is_some() {
-                    // unwrap() ok here because of check
-                    model.error = Some(format!("Could not remove todo {0}", removed.unwrap().id));
+                if let Some(index) = model.todos.iter().position(|todo| todo.id == resp.id) {
+                    model.todos.remove(index);
+                } else {
+                    model.error = Some(format!("Could not remove todo {0}", resp.id));
                 }
             }
             Err(e) => model.error = Some(e),
@@ -129,7 +123,8 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         },
         ToDoUpdated(resp) => match validate_api_request(resp) {
             Ok(resp) => {
-                if let Some(todo) = model.todos.get_mut(&resp.id) {
+                if let Some(index) = model.todos.iter().position(|todo| todo.id == resp.id) {
+                    let mut todo = &mut model.todos[index];
                     todo.description = resp.description;
                     todo.completed = resp.completed;
                 }

@@ -1,7 +1,8 @@
 use crate::{Msg, Model};
 use seed::*;
-use seed::browser::fetch as fetch;
 use seed::prelude::*;
+
+const ENTER_KEY: &str = "Enter";
 
 pub fn view(model: &Model) -> Node<Msg> {
     div![C!["container main"],
@@ -62,16 +63,16 @@ fn view_body(model: &Model) -> Node<Msg> {
             div![ C!["col col-4"] ,
                 ul![
                     C!["list-group"],
-                    model.todos.iter().map(|(_, item)| {
-                        let id = todo.id;
-                        let completed = todo.completed;
+                    model.todos.iter().map(|item| {
+                        let id = item.id;
+                        let completed = item.completed;
                         li![C!["list-group-item d-flex justify-content-between align-items-start"],
                             input![
                                 C!["checkbox form-check-input"],
-                                attrs! { At::Type => "checkbox", At::Checked => todo.completed.as_at_value() },
+                                attrs! { At::Type => "checkbox", At::Checked => item.completed.as_at_value() },
                                 ev(Ev::Change, move |_| Msg::UpdateCompletedState(id, !completed))
                             ],
-                            div![C!["ms-2 me-auto", IF!(completed => "task-completed")], &todo.description],
+                            div![C!["ms-2 me-auto", IF!(completed => "task-completed")], &item.description],
                             button![
                                 C!["btn-close btn-close-custom"],
                                 ev(Ev::Click, move |_| Msg::RemoveToDo(id))
