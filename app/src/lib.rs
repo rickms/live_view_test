@@ -3,6 +3,7 @@ use seed::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use todo_common::{ClearResponse, RemoveResponse, UpdateRequest};
+use seed::prelude::web_sys::HtmlElement;
 
 mod view;
 mod request;
@@ -21,6 +22,8 @@ pub struct Model {
     todos: Vec<ToDo>,
     new_todo_description: String,
     error: Option<String>,
+    input_element:ElRef<web_sys::HtmlInputElement>
+
 }
 
 pub enum Msg {
@@ -64,11 +67,19 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         NewToDoDescriptionChange(description) => {
             model.new_todo_description = description;
+            if let Some(input) = model.input_element.map_type::<HtmlElement>().get() {
+                seed::log("Updating Element");
+                orders.after_next_render(move |_| {
+                    seed::log(format!("Focusing {0}", input.id()));
+                    input.focus().expect("focus input");
+                });
+            }
+
         }
         AddToDo => {
             let description = model.new_todo_description.trim().to_owned();
             if description.is_empty() {
-                model.error = Some("Task description required".to_string());
+                model.error = Some("Task description required.".to_string());
                 return;
             }
 

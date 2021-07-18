@@ -77,5 +77,5 @@ impl<T> Responder for ApiResponse<T> where Self: Serialize, T:Serialize {
 
 #[get("/")]
 pub async fn page() -> actix_web::Result<NamedFile> {
-    Ok(NamedFile::open("./index.html")?)
+    Ok(NamedFile::open("./app_ts/build/index.html")?)
 }

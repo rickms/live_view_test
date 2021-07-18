@@ -43,8 +43,9 @@ fn view_body(model: &Model) -> Node<Msg> {
         div![ C!["row"],
             div![ C!["col col-3 float-end"] ,
                 input![
+                    el_ref(&model.input_element),
                     C!["form-control"],
-                    attrs!{ At::Type => "text" , At::Placeholder => "New Task Description...", At::Value => model.new_todo_description.as_str()},
+                    attrs!{ At::Type => "text" ,At::Id => "task_description",  At::Placeholder => "New Task Description...", At::Required => AtValue::None, At::Value => model.new_todo_description.as_str()},
                     input_ev(Ev::Input, Msg::NewToDoDescriptionChange),
                     keyboard_ev(Ev::KeyDown, |keyboard_event| {
                         IF!(keyboard_event.key() == ENTER_KEY => Msg::AddToDo)
@@ -66,7 +67,7 @@ fn view_body(model: &Model) -> Node<Msg> {
                     model.todos.iter().map(|item| {
                         let id = item.id;
                         let completed = item.completed;
-                        li![C!["list-group-item d-flex justify-content-between align-items-start"],
+                            li![C!["list-group-item d-flex justify-content-between align-items-start"],
                             input![
                                 C!["checkbox form-check-input"],
                                 attrs! { At::Type => "checkbox", At::Checked => item.completed.as_at_value() },
