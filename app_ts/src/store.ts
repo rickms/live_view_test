@@ -1,8 +1,10 @@
 import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
 import todoReducer from "./features/todos/todosSlice";
+import commonReducer from "./features/common/commonSlice"
 
 export const store = configureStore({
     reducer: {
+        common: commonReducer,
         todos: todoReducer
     },
     middleware: getDefaultMiddleware(), // includes thunk

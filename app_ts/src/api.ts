@@ -23,7 +23,6 @@ function isResult<T>(response:Response<T>): response is Result<T> {
 
 function objectInterpolate(source:string, values:object) {
     for (const [k,v] of Object.entries(values)) {
-        console.log(`replacing {${k}} with ${v} in ${source}`);
         source = source.replace("{" + k + "}", v.toString())
     }
     return source;

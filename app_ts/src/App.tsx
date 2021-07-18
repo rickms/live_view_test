@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import {Header} from "./components/Header";
-import {Main} from "./components/Main"
+import {Header} from "./features/common/components/Header";
+import {Main} from "./features/common/components/Main"
 import {Col, Container, Row} from "react-bootstrap";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
                 </Col>
             </Row>
             <Row>
-                <Col>
+                <Col className="col-4">
                     <Main/>
                 </Col>
             </Row>

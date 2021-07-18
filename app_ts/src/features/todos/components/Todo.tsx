@@ -9,11 +9,18 @@ import {clearTodos} from "../todosSlice";
 
 export const Todo:FunctionComponent<any> = () => {
     const dispatch = useAppDispatch();
-    const error = useSelector( (state:RootState) => state.todos.error )
+    const todoCount = useSelector( (state:RootState) => state.todos.items.length );
 
-    let error_component = error ? <div className="row"><div className="alert alert-danger">{error}</div></div> : <></>;
-
+    // button handler
     const onClick = () => dispatch(clearTodos());
+
+    const clearButton = todoCount > 0 ?
+        <Row className="row justify-content-end">
+            <Col className="col-3 text-end">
+                <Button className="btn btn-danger" onClick={onClick}>Clear</Button>
+            </Col>
+        </Row>
+        : <></>
 
     return  <Container className="tasks">
                 <Row className="row">
@@ -21,14 +28,8 @@ export const Todo:FunctionComponent<any> = () => {
                         <h3>Tasks</h3>
                     </Col>
                 </Row>
-                {error_component}
                 <NewTodoInput/>
                 <TodoList/>
-                <br/>
-                <Row className="row">
-                    <Col className="col">
-                        <Button className="btn btn-danger float-end" onClick={onClick}>Clear</Button>
-                    </Col>
-                </Row>
-    </Container>;
+                {clearButton}
+        </Container>;
 }

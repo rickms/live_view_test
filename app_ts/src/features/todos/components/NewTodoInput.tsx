@@ -1,7 +1,9 @@
 import React, {FormEvent, FunctionComponent, useRef, useState} from "react";
 import {useAppDispatch, useFormInput} from "../../../hooks";
-import {addTodo} from "../todosSlice";
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {addTodo, TodoAction} from "../todosSlice";
+import {Button, Col, Form, Row, Spinner} from 'react-bootstrap';
+import {useSelector} from "react-redux";
+import {RootState} from "../../../store";
 
 export const NewTodoInput:FunctionComponent<any> = () => {
     let dispatch = useAppDispatch();
@@ -9,20 +11,34 @@ export const NewTodoInput:FunctionComponent<any> = () => {
     const [validated, setValidated] = useState(false);
     let description = useFormInput("", onSubmit);
     const formRef = useRef<HTMLFormElement>(null);
+    const currentAction = useSelector( (state:RootState) => state.todos.currentAction);
 
     function onSubmit() {
-        console.log(formRef);
         if (formRef?.current?.checkValidity() === true) {
             setValidated(false);
             dispatch(addTodo({description: description.value}));
-            console.log("Setting validated to ", validated)
             description.set("");
+        } else {
+            setValidated(true);
         }
-        setValidated(true);
     }
 
-    return  <div className="row">
-                <Form ref={formRef} noValidate validated={validated} onSubmit={(event:FormEvent<HTMLFormElement>) => event.preventDefault() }>
+    const submitButton = currentAction === TodoAction.Adding ?
+        <Button variant="primary" disabled>
+            <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+            />
+            <span className="visually-hidden">Loading...</span>
+        </Button> :
+        <Button variant="primary" type="button" onClick={onSubmit}>Add</Button>;
+
+
+
+    return <Form ref={formRef} noValidate validated={validated} onSubmit={(event:FormEvent<HTMLFormElement>) => event.preventDefault() }>
                     <Row>
                        <Col>
                             <Form.Group className="mb-3" controlId="formDescription">
@@ -32,10 +48,9 @@ export const NewTodoInput:FunctionComponent<any> = () => {
                                 </Form.Control.Feedback>
                             </Form.Group>
                        </Col>
-                       <Col className="col-3">
-                           <Button variant="primary" type="button" onClick={onSubmit}>Add</Button>
+                       <Col className="col-3 text-end">
+                           {submitButton}
                        </Col>
                     </Row>
                 </Form>
-            </div>;
 }

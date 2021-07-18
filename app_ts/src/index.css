@@ -41,3 +41,25 @@ input {
   text-decoration: line-through;
   opacity: 0.75;
 }
+
+.empty-list {
+  text-align: center;
+  font-style: italic;
+  color: #aaaaaa;
+}
+
+ul.task-list {
+  padding: 0;
+}
+
+.error-toast {
+  margin: 10px;
+}
+
+.error-toast-icon { margin-right: 5px;}
+
+div.tasks {
+  border:1px solid #dddddd;
+  border-radius: 5px;
+  box-shadow: #dddddd 5px 5px 10px
+}
