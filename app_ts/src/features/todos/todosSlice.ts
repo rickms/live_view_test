@@ -42,6 +42,7 @@ interface RemoveResult {
 
 const initialState = { items: [ ], currentAction: TodoAction.Loading } as TodoState;
 
+// We create thunks async thinks that will interact with our REST API
 export const getTodos = createApiThunk<Todo[],void>('todos/fetchTodos',api("/api/todo"));
 export const addTodo = createApiThunk<Todo,CreateRequest>('todos/addTodo', api("/api/todo"), Method.POST );
 export const updateTodo = createApiThunk<Todo, UpdateRequest>('todos/updateTodo', api('/api/todo/{id}'), Method.PUT);
@@ -53,30 +54,31 @@ export const todos = createSlice({
     initialState,
     reducers: {
     },
+    // These are the reducers for the resolution of the Promises create when we attempt to interact with the REST API
     extraReducers : builder => {
-        builder.addCase(getTodos.pending, (state, action) => {
+        builder.addCase(getTodos.pending, (state) => {
             state.currentAction = TodoAction.Loading;
         });
         builder.addCase(getTodos.fulfilled, (state, action) => {
             state.currentAction = TodoAction.Idle;
             state.items = action.payload;
         });
-        builder.addCase(getTodos.rejected, (state, action) => {
+        builder.addCase(getTodos.rejected, (state) => {
             state.currentAction = TodoAction.Idle;
         });
 
-        builder.addCase(addTodo.pending, (state, action) => {
+        builder.addCase(addTodo.pending, (state) => {
             state.currentAction = TodoAction.Adding;
         });
         builder.addCase(addTodo.fulfilled, (state, action) => {
             state.currentAction = TodoAction.Idle;
             state.items.push(action.payload)
         });
-        builder.addCase(addTodo.rejected, (state, action) => {
+        builder.addCase(addTodo.rejected, (state) => {
             state.currentAction = TodoAction.Idle;
         });
 
-        builder.addCase(updateTodo.pending, (state, action) => {
+        builder.addCase(updateTodo.pending, (state,) => {
             state.currentAction = TodoAction.Updating;
         });
         builder.addCase(updateTodo.fulfilled, (state, action) => {
@@ -87,22 +89,22 @@ export const todos = createSlice({
                 item.completed = action.payload.completed;
             }
         });
-        builder.addCase(updateTodo.rejected, (state, action) => {
+        builder.addCase(updateTodo.rejected, (state) => {
             state.currentAction = TodoAction.Idle;
         });
 
-        builder.addCase(clearTodos.pending, (state, action) => {
+        builder.addCase(clearTodos.pending, (state) => {
             state.currentAction = TodoAction.Clearing;
         });
-        builder.addCase(clearTodos.fulfilled, (state, action) => {
+        builder.addCase(clearTodos.fulfilled, (state) => {
             state.currentAction = TodoAction.Idle;
             state.items = [];
         });
-        builder.addCase(clearTodos.rejected, (state, action) => {
+        builder.addCase(clearTodos.rejected, (state) => {
             state.currentAction = TodoAction.Idle;
         });
 
-        builder.addCase(removeTodo.pending, (state, action) => {
+        builder.addCase(removeTodo.pending, (state) => {
             state.currentAction = TodoAction.Removing;
         });
         builder.addCase(removeTodo.fulfilled, (state, action) => {

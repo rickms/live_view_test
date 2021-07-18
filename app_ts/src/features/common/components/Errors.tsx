@@ -10,7 +10,9 @@ export const Errors:FunctionComponent<any> = () => {
     const dispatch = useAppDispatch();
     const errors = useSelector( (state:RootState) => state.common.errors);
 
-    let currentErrors = [...errors];
+    let currentErrors = [...errors]; // Need to copy here because we can't mutate errors directly
+
+    // Show toasts for all errors we have not yet dismissed
     const toasts = currentErrors.reverse().map( error => {
         return <Toast className="error-toast" key={error.id} autohide={true} delay={6000} onClose={() => dispatch(clearError(error.id))}>
                     <Toast.Header>
@@ -21,7 +23,5 @@ export const Errors:FunctionComponent<any> = () => {
                 </Toast>
     });
 
-    return  <ToastContainer position="bottom-end">
-    {toasts}
-    </ToastContainer>
+    return  <ToastContainer position="bottom-end">{toasts}</ToastContainer>
 }

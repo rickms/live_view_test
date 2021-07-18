@@ -7,14 +7,14 @@ import {Col, Container, Row} from "react-bootstrap";
 function App() {
   return (
     <div className="App">
-        <Container>
+        <Container fluid >
             <Row>
                 <Col>
                     <Header/>
                 </Col>
             </Row>
             <Row>
-                <Col className="col-4">
+                <Col className="col-3">
                     <Main/>
                 </Col>
             </Row>

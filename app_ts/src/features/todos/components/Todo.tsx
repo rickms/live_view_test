@@ -1,26 +1,25 @@
 import React, {FunctionComponent} from "react";
 import {TodoList} from "./TodoList";
 import {NewTodoInput} from "./NewTodoInput";
-import {useSelector} from "react-redux";
 import {RootState} from "../../../store";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {useAppDispatch} from "../../../hooks";
+import {useAppDispatch, useAppSelector} from "../../../hooks";
 import {clearTodos} from "../todosSlice";
 
 export const Todo:FunctionComponent<any> = () => {
     const dispatch = useAppDispatch();
-    const todoCount = useSelector( (state:RootState) => state.todos.items.length );
+    const todoCount = useAppSelector( (state:RootState) => state.todos.items.length );
 
-    // button handler
+    // Clear button handler
     const onClick = () => dispatch(clearTodos());
 
-    const clearButton = todoCount > 0 ?
+    // Clear button
+    const ClearButton:FunctionComponent<{ }> = () =>
         <Row className="row justify-content-end">
             <Col className="col-3 text-end">
                 <Button className="btn btn-danger" onClick={onClick}>Clear</Button>
             </Col>
-        </Row>
-        : <></>
+        </Row>;
 
     return  <Container className="tasks">
                 <Row className="row">
@@ -30,6 +29,6 @@ export const Todo:FunctionComponent<any> = () => {
                 </Row>
                 <NewTodoInput/>
                 <TodoList/>
-                {clearButton}
-        </Container>;
+                { todoCount > 0 ? <ClearButton/> : <></> }
+            </Container>;
 }

@@ -1,24 +1,23 @@
 import React, {FunctionComponent, useEffect} from "react";
-import {useAppDispatch} from "../../../hooks";
+import {useAppDispatch, useAppSelector} from "../../../hooks";
 import {getTodos, TodoAction} from "../todosSlice";
-import {useSelector} from "react-redux";
 import {RootState} from "../../../store";
 import {TodoListItem} from "./TodoListItem";
-import {Spinner} from "react-bootstrap";
+import {Col, Row, Spinner} from "react-bootstrap";
 
 export const TodoList:FunctionComponent<any> = () => {
     const dispatch = useAppDispatch();
-    const items = useSelector((state:RootState) => state.todos.items);
-    const currentAction = useSelector( (state:RootState) => state.todos.currentAction);
+    const items = useAppSelector((state:RootState) => state.todos.items);
+    const currentAction = useAppSelector( (state:RootState) => state.todos.currentAction);
 
     useEffect(() => {
         dispatch(getTodos());
     }, [dispatch])
 
+    // Either show a The todos list, the "No Todos" message or a loading spinner, depending on the state of things.
     let list;
-
     if (currentAction === TodoAction.Loading) {
-        list = <div><Spinner animation="border" role="status"/>Loading Tasks...</div>
+        list = <Spinner animation="border" role="status" variant="primary"/>
     } else {
         if (items.length > 0 ) {
             list = <ul className="task-list">{items.map(item => <TodoListItem key={item.id} id={item.id} description={item.description} completed={item.completed}/>)}</ul>
@@ -27,5 +26,5 @@ export const TodoList:FunctionComponent<any> = () => {
         }
     }
 
-    return list;
+    return <Row><Col className="text-center">{list}</Col></Row>
 }
