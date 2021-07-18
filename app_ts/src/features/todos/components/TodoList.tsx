@@ -1,8 +1,8 @@
 import React, {FunctionComponent, useEffect} from "react";
-import {useAppDispatch} from "../../hooks";
-import {fetchTodos} from "../../features/todos/todosSlice";
+import {useAppDispatch} from "../../../hooks";
+import {getTodos} from "../todosSlice";
 import {useSelector} from "react-redux";
-import {RootState} from "../../store";
+import {RootState} from "../../../store";
 import {TodoListItem} from "./TodoListItem";
 
 export const TodoList:FunctionComponent<any> = () => {
@@ -10,10 +10,10 @@ export const TodoList:FunctionComponent<any> = () => {
     const items = useSelector((state:RootState) => state.todos.items);
 
     useEffect(() => {
-        dispatch(fetchTodos());
-    }, [])
+        dispatch(getTodos());
+    }, [dispatch])
 
-    const list = items.map( e => <TodoListItem key={e.id} id={e.id} description={e.description} completed={e.completed} />);
+    const list = items.map( item => <TodoListItem key={item.id} id={item.id} description={item.description} completed={item.completed} />);
 
-    return <div>{list}</div>;
+    return <ul className="list-group">{list}</ul>;
 }

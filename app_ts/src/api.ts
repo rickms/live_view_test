@@ -1,5 +1,12 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 
+export enum Method {
+    GET = "GET",
+    PUT = "PUT",
+    POST = "POST",
+    DELETE = "DELETE"
+}
+
 interface Error {
     error: string
 }
@@ -13,20 +20,39 @@ type Response<T> = Result<T> | Error;
 function isResult<T>(response:Response<T>): response is Result<T> {
     return 'data' in response;
 }
+
+function objectInterpolate(source:string, values:object) {
+    for (const [k,v] of Object.entries(values)) {
+        console.log(`replacing {${k}} with ${v} in ${source}`);
+        source = source.replace("{" + k + "}", v.toString())
+    }
+    return source;
+}
+
 // R = Return type, P = parameter type, E = error type
-export function createApiThunk<R,P>(action:string, resource:string, resource_params?: RequestInit) {
+export function createApiThunk<R,P extends object | void>(action:string, resource:string, method?:Method, resource_params?: RequestInit) {
     return  createAsyncThunk<R,P, { rejectValue: Error }>(action, async (params, thunkApi) => {
         resource_params = resource_params ?? { };
+        resource_params.method = method ?? Method.GET;
 
         const requestHeaders: HeadersInit = new Headers();
         requestHeaders.set('Content-Type', 'application/json');
         resource_params.headers = requestHeaders;
 
+        let res = resource;
+        // interpolate any `{}` value in the parameter
         if(params) {
-            resource_params.body = JSON.stringify(params);
+            res = objectInterpolate(res, params);
+
+            // We only include the params as body for POST and PUT.
+            // For non-body methods like DELETE where we want to take a param so we can do interpolation on the
+            // url, but we don't want to unnecessarily send a body
+            if(resource_params.method === Method.POST || resource_params?.method === Method.PUT) {
+                resource_params.body = JSON.stringify(params);
+            }
         }
 
-        const fetch_response = await fetch(resource, resource_params);
+        const fetch_response = await fetch(res, resource_params);
         if (fetch_response.ok) {
             const api_response = (await fetch_response.json()) as Response<R>;
             if (isResult(api_response)) {
