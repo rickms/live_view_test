@@ -1,5 +1,6 @@
+import {Checkbox, IconButton, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close"
 import React, {FunctionComponent} from "react";
-import {Button} from "react-bootstrap";
 import {useAppDispatch} from "../../../hooks";
 import {removeTodo, updateTodo} from "../todosSlice";
 
@@ -15,9 +16,19 @@ export const TodoListItem:FunctionComponent<TodoListItemProps> = (props) => {
     const onChange = () => dispatch(updateTodo({ id: props.id, completed: !props.completed}));
     const onRemove = () => dispatch(removeTodo( { id: props.id }));
 
-    return <li className="list-group-item d-flex justify-content-between align-items-start">
-        <input className="checkbox form-check-input" type="checkbox" checked={props.completed} onChange={onChange}/>
-        <div className={"ms-2 me-auto " + (props.completed ? 'task-completed' : "")}>{props.description}</div>
-        <Button className="btn-close btn-close-custom" onClick={onRemove}/>
-    </li>;
+    const CloseButton = <IconButton edge="end" aria-label="close" onClick={onRemove}><CloseIcon /></IconButton>;
+
+    return (
+        <ListItem key={props.id} secondaryAction={CloseButton}>
+            <ListItemIcon>
+            <Checkbox
+                edge="start"
+                checked={props.completed}
+                disableRipple
+                onChange={onChange}
+            />
+            </ListItemIcon>
+            <ListItemText primary={props.description} className={props.completed ? "task-completed" : ""} />
+        </ListItem>
+    )
 }

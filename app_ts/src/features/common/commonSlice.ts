@@ -3,7 +3,7 @@ import {addTodo, clearTodos, getTodos, removeTodo, updateTodo} from "../todos/to
 
 let errorId = 0;
 
-interface Error {
+export interface Error {
     id: number,
     description: string
 }
@@ -25,19 +25,19 @@ export const common = createSlice({
     // Here we hook into the reducers associated with the rejection of todo api request promises,
     // allowing us to display an error message to the user.
     extraReducers: builder => {
-        builder.addCase(getTodos.rejected, (state, action) => {
+        builder.addCase(getTodos.rejected, (state) => {
             state.errors.push({ id: ++errorId, description: "Unable to load Todos" });
         });
-        builder.addCase(addTodo.rejected, (state, action) => {
+        builder.addCase(addTodo.rejected, (state) => {
             state.errors.push({ id: ++errorId, description: "Unable to add Todo" });
         });
-        builder.addCase(removeTodo.rejected, (state, action) => {
+        builder.addCase(removeTodo.rejected, (state) => {
             state.errors.push({ id: ++errorId, description: "Unable to remove Todo" });
         });
-        builder.addCase(clearTodos.rejected, (state, action) => {
+        builder.addCase(clearTodos.rejected, (state) => {
             state.errors.push({ id: ++errorId, description: "Unable to clear Todos" });
         });
-        builder.addCase(updateTodo.rejected, (state, action) => {
+        builder.addCase(updateTodo.rejected, (state) => {
             state.errors.push({ id: ++errorId, description: "Unable to update Todos" });
         });
     }

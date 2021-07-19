@@ -2,25 +2,32 @@ import React from 'react';
 import './App.css';
 import {Header} from "./features/common/components/Header";
 import {Main} from "./features/common/components/Main"
-import {Col, Container, Row} from "react-bootstrap";
+import {Sidebar} from "./features/common/components/Sidebar"
+import Grid from '@material-ui/core/Grid';
+import {Errors} from "./features/common/components/Errors";
 
 function App() {
-  return (
-    <div className="App">
-        <Container fluid >
-            <Row>
-                <Col>
+
+    return (
+        <div className="App">
+            <Grid container>
+                <Grid item xs={12}>
                     <Header/>
-                </Col>
-            </Row>
-            <Row>
-                <Col className="col-3">
-                    <Main/>
-                </Col>
-            </Row>
-        </Container>
-    </div>
-  );
+                </Grid>
+                <Grid item xs={12} >
+                    <Grid container>
+                        <Grid item xs={12} md={3}>
+                            <Sidebar/>
+                        </Grid>
+                        <Grid item>
+                            <Main/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Errors/>
+        </div>
+    )
 }
 
 export default App;

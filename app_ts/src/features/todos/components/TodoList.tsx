@@ -3,28 +3,29 @@ import {useAppDispatch, useAppSelector} from "../../../hooks";
 import {getTodos, TodoAction} from "../todosSlice";
 import {RootState} from "../../../store";
 import {TodoListItem} from "./TodoListItem";
-import {Col, Row, Spinner} from "react-bootstrap";
+import {List, Skeleton} from "@material-ui/core";
 
-export const TodoList:FunctionComponent<any> = () => {
+export const TodoList:FunctionComponent = () => {
     const dispatch = useAppDispatch();
-    const items = useAppSelector((state:RootState) => state.todos.items);
-    const currentAction = useAppSelector( (state:RootState) => state.todos.currentAction);
+    const items = useAppSelector((state: RootState) => state.todos.items);
+    const currentAction = useAppSelector((state: RootState) => state.todos.currentAction);
 
     useEffect(() => {
         dispatch(getTodos());
     }, [dispatch])
 
-    // Either show a The todos list, the "No Todos" message or a loading spinner, depending on the state of things.
+    // Either show a The todos list, the "No Todos" message or a loading skeleton, depending on the state of things.
     let list;
     if (currentAction === TodoAction.Loading) {
-        list = <Spinner animation="border" role="status" variant="primary"/>
+        list = <Skeleton variant="rectangular" width="100%" />;
     } else {
-        if (items.length > 0 ) {
-            list = <ul className="task-list">{items.map(item => <TodoListItem key={item.id} id={item.id} description={item.description} completed={item.completed}/>)}</ul>
+        if (items.length > 0) {
+            list = <List disablePadding>{items.map(item => <TodoListItem key={item.id} id={item.id} description={item.description}
+                                                          completed={item.completed}/>)}</List>
         } else {
             list = <div className="empty-list">No Todos</div>
         }
     }
 
-    return <Row><Col className="text-center">{list}</Col></Row>
+    return list;
 }

@@ -15,6 +15,7 @@ export enum TodoAction {
 
 interface TodoState {
     currentAction: TodoAction,
+    actionStartTime?: number,
     items:Todo[]
 }
 
