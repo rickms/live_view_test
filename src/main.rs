@@ -34,7 +34,10 @@ async fn main() -> std::io::Result<()> {
             .service(services::todo::clear_todos)
             .service(services::todo::update_todo)
             .service(services::page)
-            .service(fs::Files::new("/", "./app_ts/build").show_files_listing())
+            .service(services::mat_page)
+            .service(fs::Files::new("/static", "./pkg").show_files_listing())
+            .service(fs::Files::new("/mat/", "./app_ts/build"))
+
     })
     .bind("127.0.0.1:8000")?
     .run()
